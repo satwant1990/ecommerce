@@ -67,7 +67,7 @@ export const userLogout = catchAsyncError(async (req, resp, next) => {
 })
 
 export const getUserDetail = catchAsyncError(async (req, resp, next) => {
-    const id = req.params.id
+    const id = req.user.id
     const user = await User.findById(id)
     if (!user) {
         return next(new ErrorHandler("User not found", 400))
@@ -145,15 +145,15 @@ export const updatePassword = catchAsyncError(async (req, resp, next) => {
 
     const user = await User.findById(req.user.id).select("+password")
     if (!user) {
-        return next(new ErrorHandler("User not found",400))
+        return next(new ErrorHandler("User not found", 400))
     }
-    
+
     const isMatch = await user.isMatched(oldpassword)
     if (!isMatch) {
-        return next(new ErrorHandler("Old password is incorrect",400))
+        return next(new ErrorHandler("Old password is incorrect", 400))
     }
     if (newpassword !== confirmnewpassword) {
-        return next(new ErrorHandler("Password does not matched'",400))
+        return next(new ErrorHandler("Password does not matched'", 400))
     }
 
     user.password = newpassword;
@@ -169,11 +169,11 @@ export const updatePassword = catchAsyncError(async (req, resp, next) => {
 
 
 //Get All Users
-export const allUsers = catchAsyncError(async(req,resp,next)=>{
+export const allUsers = catchAsyncError(async (req, resp, next) => {
     const users = await User.find();
     const user_count = users.length
     resp.status(200).json({
-        success:true,
+        success: true,
         user_count,
         users
     })

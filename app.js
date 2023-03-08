@@ -8,16 +8,20 @@ import cookieParser from 'cookie-parser'
 const app = express();
 
 //Config
-dotenv.config({path:"config/config.env"})
+dotenv.config({ path: "config/config.env" })
 connectDatabase();
-app.use(cors())
+app.use(cors({
+    credentials: true,
+    origin: "http://localhost:3000",
+    methods: ["GET", "POST", "PUT", "DELETE"]
+}))
 app.use(express.json())
-app.use(express.urlencoded({extended:true}))
+app.use(express.urlencoded({ extended: true }))
 app.use(cookieParser())
 
 //Routes
 import userRoutes from './routes/userRoute.js'
-app.use("/api/v1",userRoutes)
+app.use("/api/v1", userRoutes)
 import productRoutes from './routes/productRoute.js'
 app.use("/api/v1", productRoutes)
 import orderRoute from './routes/orderRoute.js'
